@@ -1,12 +1,11 @@
 package my.petris.view.widgets
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,23 +17,25 @@ import my.petris.view.Block
 @Composable
 fun BlockGrid(
     viewModel: BlockGridViewModel = viewModel(),
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier)
+{
+    val list by viewModel.blocks.observeAsState()
+
     Box(modifier = Modifier
         .width((viewModel.xCount * viewModel.blockSize).dp)) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(10),
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.spacedBy(1.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
             content = {
-                for (item in viewModel.blocks.value!!) {
+                for (blockState in list!!) {
                     item {
-                        Block(color = item.color, size = viewModel.blockSize.dp)
+                        Block(color = blockState.color, size = viewModel.blockSize.dp)
                     }
                 }
-            },
-            modifier = Modifier.width((viewModel.xCount * viewModel.blockSize).dp)
+            }
         )
     }
-
 }
 
 @Preview(widthDp = 320)
